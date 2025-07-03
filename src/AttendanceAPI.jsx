@@ -5,6 +5,7 @@ export default function AttendanceAPI() {
   const [attendanceList, setAttendanceList] = useState([]);
   const [userId, setUserId] = useState('');
   const [date, setDate] = useState('');
+  const [attendanceStatusId, setAttendanceStatusId] = useState('');
 
   useEffect(() => {
     fetchAttendance();
@@ -26,6 +27,7 @@ export default function AttendanceAPI() {
       await axios.post('http://localhost:5000/Attendance', {
         userID: parseInt(userId),
         date,
+
       });
 
       alert('Attendance marked successfully!');
@@ -39,6 +41,7 @@ export default function AttendanceAPI() {
       } else {
         alert('Failed to mark attendance.');
       }
+
     }
   };
 
@@ -69,7 +72,6 @@ export default function AttendanceAPI() {
             className="w-full border border-gray-300 p-2 rounded"
           />
         </div>
-
         <button
           type="submit"
           className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition"
