@@ -2,15 +2,15 @@ import React, { useState, useRef, useEffect } from "react";
 import axios from "axios";
 
 export default function LoginAPI() {
-    const [username, setUsername] = useState("");
+    const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [message, setMessage] = useState("");
     const [success, setSuccess] = useState(false);
 
-    const usernameRef = useRef(null);
+    const emailRef = useRef(null);
 
     useEffect(() => {
-        usernameRef.current?.focus();
+        emailRef.current?.focus();
     }, []);
 
     const handleLogin = async (e) => {
@@ -18,7 +18,7 @@ export default function LoginAPI() {
 
         try {
             const response = await axios.post("http://localhost:5000/login", {
-                username,
+                email,
                 password,
             });
 
@@ -40,10 +40,10 @@ export default function LoginAPI() {
 
                 <input
                     type="text"
-                    ref={usernameRef}
-                    placeholder="Name"
-                    value={username}
-                    onChange={(e) => setUsername(e.target.value)}
+                    ref={emailRef}
+                    placeholder="Email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
                     className="w-full p-2 border rounded mb-4 hover:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
                     required
                 />
