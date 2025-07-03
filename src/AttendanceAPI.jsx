@@ -25,19 +25,23 @@ export default function AttendanceAPI() {
 
     try {
       await axios.post('http://localhost:5000/Attendance', {
-        userId,
+        userID: parseInt(userId),
         date,
-        attendanceStatusId,
+
       });
 
       alert('Attendance marked successfully!');
       fetchAttendance();
       setUserId('');
       setDate('');
-      setAttendanceStatusId('');
     } catch (error) {
       console.error('Error marking attendance:', error);
-      alert('Failed to mark attendance.');
+      if (error.response?.data?.error) {
+        alert(error.response.data.error);
+      } else {
+        alert('Failed to mark attendance.');
+      }
+
     }
   };
 
@@ -68,18 +72,6 @@ export default function AttendanceAPI() {
             className="w-full border border-gray-300 p-2 rounded"
           />
         </div>
-
-        <div>
-          <label className="block mb-1 font-semibold">Attendance Status ID:</label>
-          <input
-            type="number"
-            value={attendanceStatusId}
-            onChange={(e) => setAttendanceStatusId(e.target.value)}
-            required
-            className="w-full border border-gray-300 p-2 rounded"
-          />
-        </div>
-
         <button
           type="submit"
           className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition"
