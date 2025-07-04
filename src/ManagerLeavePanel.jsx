@@ -1,13 +1,19 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 
+const token = localStorage.getItem('authToken');
+
 export default function ManagerLeavePanel() {
   const [name, setName] = useState('');
   const [requests, setRequests] = useState([]);
 
   const fetchTeamRequests = async () => {
     if (!name) return;
-    const res = await axios.get(`http://localhost:5000/LeaveRequest?name=${name}`);
+    const res = await axios.get(`http://localhost:5000/LeaveRequest?name=${name}`,{
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
     setRequests(res.data);
   };
 
@@ -16,6 +22,10 @@ export default function ManagerLeavePanel() {
       requestID,
       statusName,
       approvedBy: 2 // hardcoded for now; in real app, fetch from auth
+    },{
+      headers:{
+        Authorization: `Bearer ${token}`,
+      }
     });
     fetchTeamRequests();
   };

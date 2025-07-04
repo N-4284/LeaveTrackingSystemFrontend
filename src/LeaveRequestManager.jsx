@@ -2,6 +2,8 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';  
 import axios from 'axios';
 
+const token = localStorage.getItem('authToken');
+
 export default function LeaveRequestManager() {
   const [name, setName] = useState('');
   const [leaveTypeName, setLeaveTypeName] = useState('');
@@ -17,7 +19,11 @@ export default function LeaveRequestManager() {
 
   const fetchRequests = async () => {
     if (!userID) return;
-    const res = await axios.get(`http://localhost:5000/LeaveRequest/My?userID=${userID}`);
+    const res = await axios.get(`http://localhost:5000/LeaveRequest/My?userID=${userID}`,{
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
     setRequests(res.data);
   };
 
@@ -25,18 +31,30 @@ export default function LeaveRequestManager() {
     e.preventDefault();
     const res = await axios.post('http://localhost:5000/LeaveRequestByName', {
       name, leaveTypeName, startDate, endDate, reason,
+    },{
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
     });
     alert(res.data.message);
     fetchRequests();
   };
 
   const handleDelete = async (id) => {
-    await axios.delete(`http://localhost:5000/LeaveRequest/Delete/${id}`);
+    await axios.delete(`http://localhost:5000/LeaveRequest/Delete/${id}`,{
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
     fetchRequests();
   };
 
   const getUserID = async () => {
-    const res = await axios.get(`http://localhost:5000/LeaveRequest?name=${name}`);
+    const res = await axios.get(`http://localhost:5000/LeaveRequest?name=${name}`,{
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
     if (res.data.length > 0) setUserID(res.data[0].userID);
   };
 

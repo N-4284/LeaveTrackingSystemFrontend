@@ -5,6 +5,8 @@ import { useNavigate } from 'react-router-dom';
 
 import axios from 'axios';
 
+const token = localStorage.getItem('authToken');
+
 export default function AttendanceAPI() {
   const [attendanceList, setAttendanceList] = useState([]);
 
@@ -25,7 +27,11 @@ export default function AttendanceAPI() {
 
   const fetchAttendance = async () => {
     try {
-      const response = await axios.get(`http://localhost:5000/Attendance?userID=${userId}`);
+      const response = await axios.get('http://localhost:5000/Attendance',{
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
       setAttendanceList(response.data);
     } catch (error) {
       console.error('Error fetching attendance:', error);
@@ -39,6 +45,10 @@ export default function AttendanceAPI() {
       await axios.post('http://localhost:5000/Attendance', {
         userID: parseInt(userId),
         date: today,
+      },{
+        headers: {
+          Authorization: `Bearer ${token}`,
+        }
       });
 
       alert('Attendance marked successfully!');
