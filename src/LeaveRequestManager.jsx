@@ -79,7 +79,7 @@ export default function LeaveRequestManager() {
         >
           <option value="">Select Leave Type</option>
           <option value="Sick Leave">Sick Leave</option>
-          <option value="Vaccation">Vaccation</option>
+          <option value="Vacation">Vaccation</option>
           <option value="Work From Home">Work From Home</option>
         </select>
         <input className="border p-2 w-full" type="date" value={startDate} onChange={e => setStartDate(e.target.value)} required />
