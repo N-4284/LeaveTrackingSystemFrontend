@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';  
 import axios from 'axios';
 
 export default function LeaveRequestManager() {
@@ -9,6 +10,7 @@ export default function LeaveRequestManager() {
   const [reason, setReason] = useState('');
   const [requests, setRequests] = useState([]);
   const [userID, setUserID] = useState('');
+  const navigate = useNavigate();
 
   // Get user's previous leave requests
   const fetchRequests = async () => {
@@ -36,6 +38,7 @@ export default function LeaveRequestManager() {
     if (res.data.length > 0) setUserID(res.data[0].userID);
   };
 
+
   useEffect(() => {
     if (name) getUserID();
   }, [name]);
@@ -49,11 +52,40 @@ export default function LeaveRequestManager() {
       <h1 className="text-2xl font-bold mb-4">Leave Request</h1>
       <form onSubmit={handleSubmit} className="space-y-4 bg-white p-4 rounded shadow">
         <input className="border p-2 w-full" placeholder="Your Name" value={name} onChange={e => setName(e.target.value)} required />
-        <input className="border p-2 w-full" placeholder="Leave Type (e.g. Sick Leave)" value={leaveTypeName} onChange={e => setLeaveTypeName(e.target.value)} required />
+        <select
+          className="border p-2 w-full"
+          value={leaveTypeName}
+          onChange={e => setLeaveTypeName(e.target.value)}
+          required
+        >
+          <option value="">Select Leave Type</option>
+          <option value="Sick Leave">Sick Leave</option>
+          <option value="Vaccation">Vaccation</option>
+          <option value="Work From Home">Work From Home</option>
+        </select>
         <input className="border p-2 w-full" type="date" value={startDate} onChange={e => setStartDate(e.target.value)} required />
         <input className="border p-2 w-full" type="date" value={endDate} onChange={e => setEndDate(e.target.value)} required />
         <textarea className="border p-2 w-full" placeholder="Reason" value={reason} onChange={e => setReason(e.target.value)} required />
-        <button type="submit" className="bg-blue-600 text-white px-4 py-2 rounded">Submit</button>
+          <div className="max-w-3xl mx-auto p-6 flex justify-start gap-x-4">
+            <button 
+              type="submit" 
+              className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-500 transition"
+            >
+              Submit
+            </button>
+
+            <button
+              type="button"
+              onClick={() => navigate('/Attendance')}
+              className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-500 transition"
+            >
+              Back
+            </button>
+          </div>
+
+
+        
+
       </form>
 
       <h2 className="text-xl font-semibold mt-8">Your Leave Requests</h2>

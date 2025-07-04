@@ -1,4 +1,5 @@
 import React, { useState, useRef, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
 export default function LoginAPI() {
@@ -6,6 +7,7 @@ export default function LoginAPI() {
     const [password, setPassword] = useState("");
     const [message, setMessage] = useState("");
     const [success, setSuccess] = useState(false);
+    const navigate = useNavigate();
 
     const emailRef = useRef(null);
 
@@ -22,20 +24,33 @@ export default function LoginAPI() {
                 password,
             });
 
-            //console.log("Login successful:", response.data);
             setSuccess(response.data.success);
             setMessage(response.data.message);
 
+            if (response.data.success) {
+                const userRole = response.data.role;
+
+                if (userRole === "Employee") {
+                    navigate("/Attendance");
+                } else if (userRole === "Manager") {
+                    navigate("/Manager");
+                } else if (userRole === "HR") {
+                    navigate("/MonthlyAttendanceReport");
+                } else {
+                    setMessage("Unknown role");
+                }
+            }
+
         } catch (error) {
-            //console.error("Login failed:", error.response.data);
-            setSuccess(error.response.data.success);
-            setMessage(error.response.data.message); 
+            console.error("Login failed:", error);
+            setSuccess(false);
+            setMessage(error.response?.data?.message || "Login failed");
         }
     };
 
     return (
-        <div className={`flex flex-col items-center justify-center h-[90vh]  ${success ? "bg-green-100" : "bg-gray-100"}`}>
-            <form onSubmit={handleLogin} className={`bg-white p-8 rounded w-80 ${success ? "shadow-[0_0_30px_0_rgba(34,197,94,0.7)]" : "shadow-[0_0_30px_0_rgba(239,68,68,0.7)]"}   "`}>
+        <div className={`flex flex-col items-center justify-center h-[90vh] ${success ? "bg-green-100" : "bg-gray-100"}`}>
+            <form onSubmit={handleLogin} className={`bg-white p-8 rounded w-80 ${success ? "shadow-[0_0_30px_0_rgba(34,197,94,0.7)]" : "shadow-[0_0_30px_0_rgba(239,68,68,0.7)]"}`}>
                 <h2 className="text-2xl font-bold mb-6 text-center">Login</h2>
 
                 <input
@@ -65,7 +80,7 @@ export default function LoginAPI() {
                 </button>
 
                 {message && (
-                    <p className={`mt-4 text-center text-sm ${ success ? "text-green-600" : "text-red-500"}`}>{message}</p>
+                    <p className={`mt-4 text-center text-sm ${success ? "text-green-600" : "text-red-500"}`}>{message}</p>
                 )}
             </form>
         </div>
