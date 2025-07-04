@@ -1,4 +1,5 @@
 import React, { useState, useRef, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
 export default function LoginAPI() {
@@ -6,6 +7,7 @@ export default function LoginAPI() {
     const [password, setPassword] = useState("");
     const [message, setMessage] = useState("");
     const [success, setSuccess] = useState(false);
+    const navigate = useNavigate();
 
     const emailRef = useRef(null);
 
@@ -25,6 +27,20 @@ export default function LoginAPI() {
             //console.log("Login successful:", response.data);
             setSuccess(response.data.success);
             setMessage(response.data.message);
+            
+            if (response.data.success) {
+                const userRole = response.data.role;
+                
+                if (userRole === "Employee") {
+                    navigate("/Attendance");
+                } else if (userRole === "Manager") {
+                    navigate("/Manager");
+                } else if (userRole === "HR") {
+                    navigate("/MonthlyAttendanceReport");
+                } else {
+                    setMessage("Unknown role");
+                }
+            }
 
         } catch (error) {
             //console.error("Login failed:", error.response.data);
