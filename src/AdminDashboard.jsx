@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
 
 export default function AdminDashboard() {
@@ -7,7 +7,27 @@ export default function AdminDashboard() {
     const [password, setPassword] = useState("");
     const [roleName, setRoleName] = useState("Employee");
     const [managerID, setManagerID] = useState("");
+    const [managers, setManagers] = useState([]);
     const [message, setMessage] = useState("");
+
+    useEffect(() => {
+        const fetchManagers = async () => {
+            try {
+
+                const token = localStorage.getItem("authToken");
+
+                const response = await axios.get("http://localhost:5000/users/managers", {
+                    headers: { Authorization: `Bearer ${token}` }
+                });
+                setManagers(response.data.managers); // expecting an array of objects: { userID, name }
+            } catch (error) {
+                console.error("Failed to fetch managers:", error);
+            }
+        };
+        fetchManagers();
+    }, []);
+
+    
 
     const handleCreateUser = async (e) => {
         e.preventDefault();
@@ -78,13 +98,18 @@ export default function AdminDashboard() {
                     <option value="Admin">Admin</option>
                 </select>
 
-                <input
-                    type="number"
-                    placeholder="Manager ID (optional)"
+                <select
                     value={managerID}
                     onChange={(e) => setManagerID(e.target.value)}
                     className="w-full p-2 border rounded"
-                />
+                >
+                    <option value="">Select Manager (Optional)</option>
+                    {managers.map(manager => (
+                        <option key={manager.userID} value={manager.userID}>
+                            {manager.name}
+                        </option>
+                    ))}
+                </select>
 
                 <button
                     type="submit"
