@@ -12,7 +12,9 @@ export default function LeaveRequestManager() {
   const [userID, setUserID] = useState('');
   const navigate = useNavigate();
 
-  // Get user's previous leave requests
+
+  //user previous leave requests
+
   const fetchRequests = async () => {
     if (!userID) return;
     const res = await axios.get(`http://localhost:5000/LeaveRequest/My?userID=${userID}`);
@@ -37,7 +39,6 @@ export default function LeaveRequestManager() {
     const res = await axios.get(`http://localhost:5000/LeaveRequest?name=${name}`);
     if (res.data.length > 0) setUserID(res.data[0].userID);
   };
-
 
   useEffect(() => {
     if (name) getUserID();
@@ -84,7 +85,7 @@ export default function LeaveRequestManager() {
           </div>
 
 
-        
+ 
 
       </form>
 
@@ -98,6 +99,7 @@ export default function LeaveRequestManager() {
             <p><strong>Reason:</strong> {r.reason}</p>
             {r.processedStatusID === 0 && (
               <button onClick={() => handleDelete(r.RequestID)} className="mt-2 text-sm text-red-600 hover:underline">Delete</button>
+
             )}
           </li>
         ))}

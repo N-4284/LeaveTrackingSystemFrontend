@@ -26,6 +26,20 @@ export default function LoginAPI() {
 
             setSuccess(response.data.success);
             setMessage(response.data.message);
+            
+            if (response.data.success) {
+                const userRole = response.data.role;
+                
+                if (userRole === "Employee") {
+                    navigate("/Attendance");
+                } else if (userRole === "Manager") {
+                    navigate("/Manager");
+                } else if (userRole === "HR") {
+                    navigate("/MonthlyAttendanceReport");
+                } else {
+                    setMessage("Unknown role");
+                }
+            }
 
             if (response.data.success) {
                 const userRole = response.data.role;

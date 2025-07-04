@@ -1,14 +1,18 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 
+
+
 import axios from 'axios';
 
 export default function AttendanceAPI() {
   const [attendanceList, setAttendanceList] = useState([]);
+
   const navigate = useNavigate(); 
   
   // Get userID from localStorage (set this after login)
   const userId = localStorage.getItem('userID');
+
 
   useEffect(() => {
     fetchAttendance();
@@ -63,7 +67,6 @@ export default function AttendanceAPI() {
           Apply for Leave
         </button>
       </div>
-
       
       <h2 className="text-2xl font-semibold mb-4">Attendance Records:</h2>
       <ul className="space-y-2">
@@ -79,6 +82,7 @@ export default function AttendanceAPI() {
           </li>
         ))}
       </ul>
+
     </div>
   );
 }
