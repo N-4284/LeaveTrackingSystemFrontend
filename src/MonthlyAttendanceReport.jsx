@@ -3,6 +3,8 @@ import axios from 'axios';
 import * as XLSX from 'xlsx';
 import { saveAs } from 'file-saver';
 
+const token = localStorage.getItem('authToken');
+
 export default function MonthlyAttendanceReport() {
   const [month, setMonth] = useState('');
   const [year, setYear] = useState('');
@@ -11,6 +13,10 @@ export default function MonthlyAttendanceReport() {
   const fetchReport = async () => {
     const response = await axios.get(`http://localhost:5000/MonthlyAttendance`, {
       params: { month, year },
+    },{
+      headers :{
+        Authorization: `Bearer ${token}`,
+      },
     });
     setReport(response.data);
   };

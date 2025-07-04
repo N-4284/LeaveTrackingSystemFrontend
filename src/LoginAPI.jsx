@@ -13,7 +13,27 @@ export default function LoginAPI() {
 
     useEffect(() => {
         emailRef.current?.focus();
-    }, []);
+        const token = localStorage.getItem("authToken");
+        if (token) {
+            axios.get("http://localhost:5000/user-info", {
+                headers: { Authorization: `Bearer ${token}` }
+            })
+            .then(res => {
+                const userRole = res.data.roleName;
+                // Redirect based on role
+                if (userRole === "Employee") {
+                    navigate("/Attendance");
+                } else if (userRole === "Manager") {
+                    navigate("/Manager");
+                } else if (userRole === "HR") {
+                    navigate("/MonthlyAttendanceReport");
+                }
+            })
+            .catch(() => {
+                localStorage.removeItem("authToken");
+            });
+        }
+    }, [navigate] );
 
     const handleLogin = async (e) => {
         e.preventDefault();
@@ -27,22 +47,17 @@ export default function LoginAPI() {
             setSuccess(response.data.success);
             setMessage(response.data.message);
             
-            if (response.data.success) {
-                const userRole = response.data.role;
-                
-                if (userRole === "Employee") {
-                    navigate("/Attendance");
-                } else if (userRole === "Manager") {
-                    navigate("/Manager");
-                } else if (userRole === "HR") {
-                    navigate("/MonthlyAttendanceReport");
-                } else {
-                    setMessage("Unknown role");
-                }
-            }
 
             if (response.data.success) {
-                const userRole = response.data.role;
+                const token = response.data.token;
+                localStorage.setItem("authToken", token);
+
+                // Fetch user info after login to get role
+                const userInfo = await axios.get("http://localhost:5000/user-info", {
+                    headers: { Authorization: `Bearer ${token}` }
+                });
+                const userRole = userInfo.data.roleName;
+                console.log("User Role:", userInfo);
 
                 if (userRole === "Employee") {
                     navigate("/Attendance");
@@ -56,9 +71,8 @@ export default function LoginAPI() {
             }
 
         } catch (error) {
-            console.error("Login failed:", error);
-            setSuccess(false);
-            setMessage(error.response?.data?.message || "Login failed");
+            setSuccess(error.response?.data?.success || false);
+            setMessage(error.response?.data?.message || "Connection Issue");
         }
     };
 
