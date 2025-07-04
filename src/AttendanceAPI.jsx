@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
 export default function AttendanceAPI() {
@@ -6,6 +7,11 @@ export default function AttendanceAPI() {
   const [userId, setUserId] = useState('');
   const [date, setDate] = useState('');
   const [attendanceStatusId, setAttendanceStatusId] = useState('');
+  const navigate = useNavigate();
+
+  const handleApplyLeave = () => {
+    navigate('/LeaveRequestManager');
+  };
 
   useEffect(() => {
     fetchAttendance();
@@ -72,12 +78,23 @@ export default function AttendanceAPI() {
             className="w-full border border-gray-300 p-2 rounded"
           />
         </div>
-        <button
-          type="submit"
-          className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition"
-        >
-          Mark Attendance
-        </button>
+        <div className="mt-6 flex justify-between">
+          <button
+            type="submit"
+            className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition"
+          >
+            Mark Attendance
+          </button>
+
+          <button
+            onClick={handleApplyLeave}
+            className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 transition"
+          >
+            Apply for Leave
+          </button>
+        </div>
+
+
       </form>
 
       {/* Attendance List */}
@@ -95,6 +112,7 @@ export default function AttendanceAPI() {
           </li>
         ))}
       </ul>
+
     </div>
   );
 }

@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
 export default function LeaveRequestManager() {
@@ -9,8 +10,10 @@ export default function LeaveRequestManager() {
   const [reason, setReason] = useState('');
   const [requests, setRequests] = useState([]);
   const [userID, setUserID] = useState('');
+  const navigate = useNavigate();
 
-  // Get user's previous leave requests
+
+
   const fetchRequests = async () => {
     if (!userID) return;
     const res = await axios.get(`http://localhost:5000/LeaveRequest/My?userID=${userID}`);
@@ -53,7 +56,19 @@ export default function LeaveRequestManager() {
         <input className="border p-2 w-full" type="date" value={startDate} onChange={e => setStartDate(e.target.value)} required />
         <input className="border p-2 w-full" type="date" value={endDate} onChange={e => setEndDate(e.target.value)} required />
         <textarea className="border p-2 w-full" placeholder="Reason" value={reason} onChange={e => setReason(e.target.value)} required />
-        <button type="submit" className="bg-blue-600 text-white px-4 py-2 rounded">Submit</button>
+        <div className='mt-6 flex justify-between'>
+          <button 
+            type="submit" 
+            className="mb-4 bg-green-600 text-white px-4 py-2 rounded hover:bg-green-500">
+              Submit
+          </button>
+          <button
+            onClick={() => navigate('/Attendance')}
+            className ="mb-4 bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-500 transition">
+              Back
+          </button>
+        </div>
+
       </form>
 
       <h2 className="text-xl font-semibold mt-8">Your Leave Requests</h2>
@@ -65,7 +80,13 @@ export default function LeaveRequestManager() {
             <p><strong>Status:</strong> {r.processedStatusID === 0 ? 'Pending' : r.processedStatusID === 1 ? 'Approved' : 'Rejected'}</p>
             <p><strong>Reason:</strong> {r.reason}</p>
             {r.processedStatusID === 0 && (
-              <button onClick={() => handleDelete(r.RequestID)} className="mt-2 text-sm text-red-600 hover:underline">Delete</button>
+              <button 
+              onClick={() => 
+              handleDelete(r.RequestID)} 
+              className="mt-2 text-sm text-red-600 hover:underline">
+                Delete
+              </button>
+              
             )}
           </li>
         ))}
