@@ -65,6 +65,8 @@ export default function LoginAPI() {
                     navigate("/Manager");
                 } else if (userRole === "HR") {
                     navigate("/MonthlyAttendanceReport");
+                }else if (userRole === "Admin") {
+                    navigate("/AdminDashboard");
                 } else {
                     setMessage("Unknown role");
                 }

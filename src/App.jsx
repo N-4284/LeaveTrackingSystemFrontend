@@ -7,6 +7,7 @@ import Attendance from './Attendance.jsx'
 import MonthlyAttendanceReport from './MonthlyAttendanceReport.jsx'
 import LeaveRequestManager from './LeaveRequestManager.jsx'
 import ManagerLeavePanel from './ManagerLeavePanel.jsx'
+import AdminDashboard from './AdminDashboard.jsx'
 
 export default function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(!!localStorage.getItem("authToken"));
@@ -20,13 +21,14 @@ export default function App() {
     <>
       <Routes>
         <Route path="/" element={<Login />} />
-        <Route path="*" element={<div>404 Not Found</div>} />
         <Route path="/Login" element={<Login />} />
         <Route path="/Logout" element={<Logout />} />
         <Route path="/Attendance" element={<Attendance />} />
         <Route path="/MonthlyAttendanceReport" element={<MonthlyAttendanceReport />} />
         <Route path="/Manager" element={<ManagerLeavePanel />} />
         <Route path="/LeaveRequestManager" element={<LeaveRequestManager />} />
+        <Route path="/AdminDashboard" element={<AdminDashboard />} />
+        <Route path="*" element={<div>404 Not Found</div>} />
       </Routes>
       <div style={{ marginTop: 32, textAlign: 'center' }}>
         <a href="/" style={{ margin: '0 10px' }}>Login</a>
