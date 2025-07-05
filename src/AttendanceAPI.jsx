@@ -1,25 +1,23 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-
-
-
+import { useAuth } from './context/AuthContext'; 
 import axios from 'axios';
-
-const token = localStorage.getItem('authToken');
 
 export default function AttendanceAPI() {
   const [attendanceList, setAttendanceList] = useState([]);
+  const navigate = useNavigate();
 
-  const navigate = useNavigate(); 
-  
-  // Get userID from localStorage (set this after login)
-  const userId = localStorage.getItem('userID');
-
+  const { fetchUser, user } = useAuth(); 
 
   useEffect(() => {
-    fetchAttendance();
+    fetchUser();
   }, []);
 
+  useEffect(() => {
+    if (user?.userID) {
+      fetchAttendance();
+    }
+  }, [user]);
 
   const handleApplyLeave = () => {
     navigate('/LeaveRequestManager');
@@ -27,7 +25,8 @@ export default function AttendanceAPI() {
 
   const fetchAttendance = async () => {
     try {
-      const response = await axios.get('http://localhost:5000/Attendance',{
+      const token = localStorage.getItem('authToken');
+      const response = await axios.get('http://localhost:5000/Attendance', {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -39,17 +38,25 @@ export default function AttendanceAPI() {
   };
 
   const handleMarkAttendance = async () => {
-    const today = new Date().toISOString().split('T')[0]; // Format: YYYY-MM-DD
+    console.log(user);
+    if (!user?.userID) return;
+
+    const today = new Date().toISOString().split('T')[0];
 
     try {
-      await axios.post('http://localhost:5000/Attendance', {
-        userID: parseInt(userId),
-        date: today,
-      },{
-        headers: {
-          Authorization: `Bearer ${token}`,
+      const token = localStorage.getItem('authToken');
+      await axios.post(
+        'http://localhost:5000/Attendance',
+        {
+          userID: parseInt(user.userID),
+          date: today,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
         }
-      });
+      );
 
       alert('Attendance marked successfully!');
       fetchAttendance();
@@ -69,7 +76,7 @@ export default function AttendanceAPI() {
         >
           Mark Attendance
         </button>
-        
+
         <button
           onClick={handleApplyLeave}
           className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition"
@@ -77,7 +84,7 @@ export default function AttendanceAPI() {
           Apply for Leave
         </button>
       </div>
-      
+
       <h2 className="text-2xl font-semibold mb-4">Attendance Records:</h2>
       <ul className="space-y-2">
         {attendanceList.map((record) => (
@@ -92,7 +99,6 @@ export default function AttendanceAPI() {
           </li>
         ))}
       </ul>
-
     </div>
   );
 }
